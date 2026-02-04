@@ -1,57 +1,13 @@
-// Contact form component for Arocean Nexus LLC
 'use client';
 
 import { motion } from 'framer-motion';
-
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { contactFormSchema, ContactFormData } from '@/lib/validations';
+import { useForm, ValidationError } from '@formspree/react';
 import { Button } from '@/components/ui/Button';
 import { Check, AlertCircle } from 'lucide-react';
 import { COMPANY_INFO } from '@/lib/constants';
 
 export function ContactForm() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm<ContactFormData>({
-    resolver: zodResolver(contactFormSchema),
-    mode: 'onBlur',
-  });
-
-  const onSubmit = async (data: ContactFormData) => {
-    setIsSubmitting(true);
-    setSubmitStatus('idle');
-
-    try {
-      // In a real application, this would send the data to your backend
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (response.ok) {
-        setSubmitStatus('success');
-        reset();
-      } else {
-        setSubmitStatus('error');
-      }
-    } catch (error) {
-      console.error('Form submission error:', error);
-      setSubmitStatus('error');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  const [state, handleSubmit] = useForm("mbdarrpq"); // Your Formspree form ID
 
   const services = [
     { value: '', label: 'Select a service...' },
@@ -73,8 +29,27 @@ export function ContactForm() {
     { value: 'not-sure', label: 'Not sure yet' },
   ];
 
+  // Success state
+  if (state.succeeded) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="p-8 bg-green-50 border border-green-200 rounded-lg text-center"
+      >
+        <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <Check className="w-8 h-8 text-green-600" />
+        </div>
+        <h3 className="text-2xl font-bold text-green-900 mb-2">Message Sent!</h3>
+        <p className="text-green-700">
+          Thank you for your inquiry. We'll get back to you within 24 hours.
+        </p>
+      </motion.div>
+    );
+  }
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6">
       {/* Name Fields */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
@@ -82,20 +57,19 @@ export function ContactForm() {
             First Name *
           </label>
           <input
-            {...register('firstName')}
             type="text"
             id="firstName"
-            className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors ${
-              errors.firstName ? 'border-red-500' : 'border-gray-300'
-            }`}
+            name="firstName"
+            required
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
             placeholder="John"
           />
-          {errors.firstName && (
-            <p className="mt-2 text-sm text-red-600 flex items-center">
-              <AlertCircle className="w-4 h-4 mr-1" />
-              {errors.firstName.message}
-            </p>
-          )}
+          <ValidationError 
+            prefix="First Name" 
+            field="firstName"
+            errors={state.errors}
+            className="mt-2 text-sm text-red-600 flex items-center"
+          />
         </div>
 
         <div>
@@ -103,20 +77,19 @@ export function ContactForm() {
             Last Name *
           </label>
           <input
-            {...register('lastName')}
             type="text"
             id="lastName"
-            className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors ${
-              errors.lastName ? 'border-red-500' : 'border-gray-300'
-            }`}
+            name="lastName"
+            required
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
             placeholder="Doe"
           />
-          {errors.lastName && (
-            <p className="mt-2 text-sm text-red-600 flex items-center">
-              <AlertCircle className="w-4 h-4 mr-1" />
-              {errors.lastName.message}
-            </p>
-          )}
+          <ValidationError 
+            prefix="Last Name" 
+            field="lastName"
+            errors={state.errors}
+            className="mt-2 text-sm text-red-600 flex items-center"
+          />
         </div>
       </div>
 
@@ -126,20 +99,19 @@ export function ContactForm() {
           Email Address *
         </label>
         <input
-          {...register('email')}
           type="email"
           id="email"
-          className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors ${
-            errors.email ? 'border-red-500' : 'border-gray-300'
-          }`}
+          name="email"
+          required
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
           placeholder="john@example.com"
         />
-        {errors.email && (
-          <p className="mt-2 text-sm text-red-600 flex items-center">
-            <AlertCircle className="w-4 h-4 mr-1" />
-            {errors.email.message}
-          </p>
-        )}
+        <ValidationError 
+          prefix="Email" 
+          field="email"
+          errors={state.errors}
+          className="mt-2 text-sm text-red-600 flex items-center"
+        />
       </div>
 
       {/* Company and Phone */}
@@ -149,9 +121,9 @@ export function ContactForm() {
             Company Name
           </label>
           <input
-            {...register('company')}
             type="text"
             id="company"
+            name="company"
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
             placeholder="Your Company Inc."
           />
@@ -162,20 +134,12 @@ export function ContactForm() {
             Phone Number
           </label>
           <input
-            {...register('phone')}
             type="tel"
             id="phone"
-            className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors ${
-              errors.phone ? 'border-red-500' : 'border-gray-300'
-            }`}
+            name="phone"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
             placeholder="(555) 123-4567"
           />
-          {errors.phone && (
-            <p className="mt-2 text-sm text-red-600 flex items-center">
-              <AlertCircle className="w-4 h-4 mr-1" />
-              {errors.phone.message}
-            </p>
-          )}
         </div>
       </div>
 
@@ -186,8 +150,8 @@ export function ContactForm() {
             Service Interested In
           </label>
           <select
-            {...register('service')}
             id="service"
+            name="service"
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
           >
             {services.map((service) => (
@@ -203,8 +167,8 @@ export function ContactForm() {
             Project Budget
           </label>
           <select
-            {...register('budget')}
             id="budget"
+            name="budget"
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
           >
             {budgets.map((budget) => (
@@ -222,29 +186,28 @@ export function ContactForm() {
           Project Details *
         </label>
         <textarea
-          {...register('message')}
           id="message"
+          name="message"
           rows={6}
-          className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors resize-none ${
-            errors.message ? 'border-red-500' : 'border-gray-300'
-          }`}
+          required
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors resize-none"
           placeholder="Tell us about your project, goals, timeline, and any specific requirements..."
         />
-        {errors.message && (
-          <p className="mt-2 text-sm text-red-600 flex items-center">
-            <AlertCircle className="w-4 h-4 mr-1" />
-            {errors.message.message}
-          </p>
-        )}
+        <ValidationError 
+          prefix="Message" 
+          field="message"
+          errors={state.errors}
+          className="mt-2 text-sm text-red-600 flex items-center"
+        />
       </div>
 
       {/* Newsletter and Agreement */}
       <div className="space-y-4">
         <div className="flex items-start space-x-3">
           <input
-            {...register('newsletter')}
             type="checkbox"
             id="newsletter"
+            name="newsletter"
             className="mt-1 w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
           />
           <label htmlFor="newsletter" className="text-sm text-gray-600">
@@ -254,12 +217,11 @@ export function ContactForm() {
 
         <div className="flex items-start space-x-3">
           <input
-            {...register('agreement')}
             type="checkbox"
             id="agreement"
-            className={`mt-1 w-4 h-4 text-primary-600 border rounded focus:ring-primary-500 ${
-              errors.agreement ? 'border-red-500' : 'border-gray-300'
-            }`}
+            name="agreement"
+            required
+            className="mt-1 w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
           />
           <label htmlFor="agreement" className="text-sm text-gray-600">
             I agree to the{' '}
@@ -273,12 +235,6 @@ export function ContactForm() {
             *
           </label>
         </div>
-        {errors.agreement && (
-          <p className="text-sm text-red-600 flex items-center">
-            <AlertCircle className="w-4 h-4 mr-1" />
-            {errors.agreement.message}
-          </p>
-        )}
       </div>
 
       {/* Submit Button */}
@@ -288,32 +244,16 @@ export function ContactForm() {
           variant="primary"
           size="lg"
           fullWidth
-          loading={isSubmitting}
-          disabled={isSubmitting}
+          loading={state.submitting}
+          disabled={state.submitting}
           className="bg-primary-600 hover:bg-primary-700"
         >
-          {isSubmitting ? 'Sending...' : 'Send Message'}
+          {state.submitting ? 'Sending...' : 'Send Message'}
         </Button>
       </div>
 
-      {/* Status Messages */}
-      {submitStatus === 'success' && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center space-x-3"
-        >
-          <Check className="w-5 h-5 text-green-600" />
-          <div>
-            <h4 className="font-semibold text-green-900">Message sent successfully!</h4>
-            <p className="text-green-700 text-sm">
-              Thank you for your inquiry. We'll get back to you within 24 hours.
-            </p>
-          </div>
-        </motion.div>
-      )}
-
-      {submitStatus === 'error' && (
+      {/* Error Message */}
+      {state.errors && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

@@ -101,7 +101,7 @@ export function Stats() {
           className="mt-16 text-center"
         >
           <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 max-w-4xl mx-auto">
-            <h3 className="text-2xl font-bold mb-4">Founded in 2023</h3>
+            <h3 className="text-2xl font-bold mb-4">Founded in 2024</h3>
             <p className="text-white/90 text-lg leading-relaxed">
               Based in Tomball, TX, we've been helping businesses transform their digital presence 
               and achieve remarkable growth through innovative technology solutions.

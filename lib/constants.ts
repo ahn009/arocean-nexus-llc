@@ -5,8 +5,8 @@ import { SERVICE_CATEGORIES, Service, PortfolioItem, Testimonial, StatItem, FAQI
 export const COMPANY_INFO = {
   name: 'Arocean Nexus LLC',
   shortName: 'Arocean Nexus',
-  description: 'Delivering exceptional digital solutions since 2023. We help businesses thrive in the digital age.',
-  founded: 2023,
+  description: 'Delivering exceptional digital solutions since 2024. We help businesses thrive in the digital age.',
+  founded: 2024,
   phone: '(213) 784-1841',
   email: 'info@aroceannexus.com',
   address: {

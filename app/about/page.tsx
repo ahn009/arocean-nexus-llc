@@ -7,7 +7,7 @@ import HeroSection from '@/components/HeroSection';
 
 export const metadata: Metadata = {
   title: 'About Us',
-  description: 'Learn about Arocean Nexus LLC - our mission, values, and commitment to delivering exceptional digital solutions since 2023.',
+  description: 'Learn about Arocean Nexus LLC - our mission, values, and commitment to delivering exceptional digital solutions since 2024.',
   openGraph: {
     title: 'About Us - Arocean Nexus LLC',
     description: 'Discover our story, values, and the team behind our success.',
